@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/artistBackground"
+            android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/albumView_artistPanel"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="26dp"
+            android:layout_marginStart="26dp"
+            android:layout_marginTop="22dp"
+            android:background="@color/colorAccent" />
+
+
+        <View
+            android:id="@+id/line1_artistPanel"
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:layout_below="@+id/albumView_artistPanel"
+            android:layout_marginTop="25dp"
+            android:background="@color/artistAccent" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="375dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/line1_artistPanel"
+            android:layout_gravity="start"
+            android:background="@null"
+            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
+            android:text="Shuffle All"
+            android:textAlignment="viewStart"
+            android:textColor="@color/artistAccent" />
+
+        <View
+            android:id="@+id/line2_artistPanel"
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:layout_below="@+id/button4"
+            android:background="@color/artistAccent" />
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/albumName_artistPanel"
+            android:layout_alignStart="@+id/albumName_artistPanel"
+            android:layout_below="@+id/albumName_artistPanel"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/year_artistPanel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Year"
+                android:textColor="@color/artistAccent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text=" • "
+                android:textColor="@color/artistAccent" />
+
+            <TextView
+                android:id="@+id/numOfSongs_artistPanel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="# Songs"
+                android:textColor="@color/artistAccent" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/albumName_artistPanel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/albumView_artistPanel"
+            android:layout_marginLeft="14dp"
+            android:layout_marginStart="14dp"
+            android:layout_toEndOf="@+id/albumView_artistPanel"
+            android:layout_toRightOf="@+id/albumView_artistPanel"
+            android:text="Album Name"
+            android:textColor="@color/artistAccent"
+            android:textSize="25sp" />
+
+        <ListView
+            android:id="@+id/songList_artistPanel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/line2_artistPanel"
+            android:layout_marginTop="14dp" />
+        </RelativeLayout>
+
+</LinearLayout>
