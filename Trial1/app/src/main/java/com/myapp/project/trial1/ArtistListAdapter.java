@@ -38,18 +38,9 @@ public class ArtistListAdapter extends ArrayAdapter<Song> {
         TextView artistText = (TextView) convertView.findViewById(R.id.artistName_artistList);
         ImageView albumArt = (ImageView) convertView.findViewById(R.id.albumView_artistList);
 
-        if (currSong.getImage() != null) {
-            options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeByteArray(currSong.getImage(), 0, currSong.getImage().length,options);
-            int imageHeight = options.outHeight;
-            int imageWidth = options.outWidth;
-            Bitmap bitmap = decodeSampledBitmapFromByteArray(currSong.getImage(), 0, 100, 100);
-            bitmap = Bitmap.createScaledBitmap(bitmap,100,100,true);
-            albumArt.setImageBitmap(bitmap);
-        } else {
-            //OOPS
-        }
+        BitmapResult bitmapResult = new BitmapResult();
+        Bitmap bitmap = bitmapResult.resizeResult(songs.get(position).getImage(), 100,100);
+        albumArt.setImageBitmap(bitmap);
         artistText.setText(currSong.getArtist());
         convertView.setTag(position);
 

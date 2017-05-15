@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
@@ -20,11 +19,9 @@ import android.os.Build;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,7 +31,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,29 +38,27 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.myapp.project.trial1.MusicService.MusicBinder;
+
+import com.myapp.project.trial1.Services.MusicService;
+import com.myapp.project.trial1.Services.MusicService.MusicBinder;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
-import java.util.List;
-import android.os.Handler;
 
-import java.util.Random;
-import java.util.logging.LogRecord;
+import android.os.Handler;
 
 public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener{
 
     private static final int REQUEST_EXTERNAL = 1;
     private Window window;
-    private Display display;
-    Point size;
     private LinearLayout layoutView;
     private static LinearLayout playerLayout;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private ArrayList<Song> songList;
     private ArrayList<Bitmap> albumArtList;
+    private ArrayList<Album> albumList;
     private Intent playIntent;
     private Context temp = this;
     public static SlidingUpPanelLayout slidingLayout;
@@ -87,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
     public static ImageButton btnPrev;
     public static ImageButton btnForward;
     public static ImageButton btnShuffle;
+    public static ImageButton btnRepeat;
+    public static ImageButton btnQueueBar;
+    public static ImageButton btnAnalysis;
     private static  Utilities util;
     private static int vibrant = 0xFFFFFF;
     private static int vibrantLight = 0x000000;
@@ -102,13 +99,15 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
         setContentView(R.layout.activity_main);
         songList = new ArrayList<Song>();
         albumArtList = new ArrayList<Bitmap>();
+        albumList = new ArrayList<Album>();
         getSongList();
+        getAlbumList();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),songList,albumArtList);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),songList,albumArtList);//albumList();
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -120,10 +119,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
         window = getWindow();
         // clear FLAG_TRANSLUCENT_STATUS flag:
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        display = getWindowManager().getDefaultDisplay();
-        size = new Point();
-        display.getSize(size);
-        int width = display.getWidth();
+
         playerLayout = (LinearLayout) findViewById(R.id.dragView);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         layoutView = (LinearLayout) findViewById(R.id.slidingContainer);
@@ -139,11 +135,11 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
         btnPrev = (ImageButton) findViewById(R.id.btn_prev_SlidingPanel);
         btnPlaySliding = (ImageButton) findViewById(R.id.btn_play_SlidingBar);
         btnShuffle = (ImageButton) findViewById(R.id.btn_shuffle_SlidingPanel);
-        artworkObj = (ImageView) findViewById(R.id.imageView);
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) artworkObj.getLayoutParams();
-        params.width = width;
-        params.height = width;
-        artworkObj.setLayoutParams(params);
+        btnRepeat = (ImageButton) findViewById(R.id.btn_repeat_SlidingPanel);
+        btnQueueBar = (ImageButton) findViewById(R.id.btn_menu_SlidingBar);
+        artworkObj = (ImageView) findViewById(R.id.albumArt_slidingPanel);
+        btnAnalysis = (ImageButton) findViewById(R.id.spek_SlidingPanel);
+        dynamicImageViewAdjustment(artworkObj);
         util = new Utilities();
         totalDurationObj = (TextView) findViewById(R.id.durationTotal);
         curDurationObj = (TextView) findViewById(R.id.durationCurrent);
@@ -194,8 +190,10 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
         btnForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                musicSrv.playNext();
-                updateSongInformation();
+                if(musicSrv.isPrepared()){
+                    musicSrv.playNext();
+                    updateSongInformation();
+                }
             }
         });
 
@@ -210,19 +208,43 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
         btnPrev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                musicSrv.playPrev();
-                updateSongInformation();
+                if(musicSrv.isPrepared()){
+                    musicSrv.playPrev();
+                    updateSongInformation();
+                }
             }
         });
 
         btnShuffle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                musicSrv.setShuffle();
-                updateSongInformation();
-                //btnShuffle.setImageResource(R.id.);
+                if(musicSrv.isPrepared()) {
+                    musicSrv.setShuffle();
+                    updateSongInformation();
+                }
             }
         });
+
+        btnRepeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), R.string.UNAVAILABLE , Toast.LENGTH_SHORT).show();
+            }
+        });
+        btnQueueBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), R.string.UNAVAILABLE, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnAnalysis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), R.string.UNAVAILABLE, Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     private ServiceConnection musicConnection = new ServiceConnection(){
@@ -243,11 +265,11 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
         }
     };
 
-    private static void updateProgressBar(){
+    public static void updateProgressBar(){
         handler.postDelayed(mUpdateTimeTask,100);
     }
 
-    private static Runnable mUpdateTimeTask = new Runnable(){
+    public static Runnable mUpdateTimeTask = new Runnable(){
 
         @Override
         public void run() {
@@ -261,7 +283,10 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
         }
     };
 
-    public static void songPicked(View view){
+    public void songPicked(View view){
+        if(musicSrv.getListSize() != songList.size()){
+            musicSrv.setList(songList);
+        }
         musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
         musicSrv.playSong();
         btnPlaySliding.setImageResource(R.drawable.btn_pause);
@@ -277,6 +302,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
         totalDurationObj.setText(totalDuration);
         artistAlbumBar.setText(artist + " - " + album);
         songBar.setText(title);
+        updateProgressBar();
         try {
             Bitmap bitmap = BitmapFactory.decodeByteArray(albumArt, 0, albumArt.length);
             Palette palette = Palette.from(bitmap).generate();
@@ -304,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
         }
     }
 
-    private void updateSongInformation(){
+    public static void updateSongInformation(){
         String title = musicSrv.getTitle();
         String artist = musicSrv.getArtist();
         String album = musicSrv.getAlbum();
@@ -359,12 +385,11 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
     @Override
     protected void onDestroy() {
         stopService(playIntent);
+        handler.removeCallbacks(mUpdateTimeTask);
         musicSrv=null;
         if(musicConnection != null)
             unbindService(musicConnection);
         super.onDestroy();
-
-
     }
 
     public void getSongList(){
@@ -414,12 +439,16 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
                 String thisArtist = musicCursor.getString(artistColumn);
                 String thisDuration = musicCursor.getString(durationColumn);
                 String thisAlbum = musicCursor.getString(albumColumn);
-
-                songList.add(new Song(thisId, thisTitle, thisArtist, thisDuration, data, thisAlbum));
+                Song s = new Song(thisId, thisTitle, thisArtist, thisDuration, data, thisAlbum);
+                songList.add(s);
 
             }while (musicCursor.moveToNext());
 
         }
+    }
+
+    public void getAlbumList(){
+
     }
 
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight){
@@ -482,6 +511,18 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
         }
     }
 
+    private void dynamicImageViewAdjustment(ImageView view){
+        Display display;
+        display = getWindowManager().getDefaultDisplay();
+         Point size = new Point();
+        display.getSize(size);
+        int width = display.getWidth();
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
+        params.width = width;
+        params.height = width;
+        view.setLayoutParams(params);
+    }
+
     private SlidingUpPanelLayout.PanelSlideListener onSlideListener() {
         return new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
@@ -500,26 +541,22 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
             public void onPanelExpanded(View view) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                    //window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-
                 }
                 layoutView.setVisibility(View.INVISIBLE);
                 int paddingPixel = 25;
                 float density = getResources().getDisplayMetrics().density;
                 int paddingDp = (int)(paddingPixel * density);
                 layoutView.setPadding(0,paddingDp,0,0);
-
-
             }
 
             @Override
             public void onPanelAnchored(View view) {
-                Log.i("Panel", " anchored");
+
             }
 
             @Override
             public void onPanelHidden(View view) {
-                Log.i("Panel", " is Hidden");
+
             }
         };
     }
@@ -557,4 +594,6 @@ public class MainActivity extends AppCompatActivity implements MediaPlayer.OnCom
         musicSrv.seek(curDur);
         updateProgressBar();
     }
+
+
 }

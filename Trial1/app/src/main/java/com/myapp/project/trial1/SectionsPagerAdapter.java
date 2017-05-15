@@ -15,7 +15,7 @@ import java.util.List;
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     private ArrayList<Song> songList;
-    private ArrayList<Bitmap> bmList;
+    private ArrayList<Bitmap> bmList; //REMOVE THIS
 
     public SectionsPagerAdapter(FragmentManager fm, ArrayList<Song> list, ArrayList<Bitmap> bmList) {
         super(fm);
@@ -36,7 +36,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
                 return tab2;
             case 2:
                 Tab3 tab3 = new Tab3();
-                tab3.setList(bmList);
+                tab3.setList(songList);
                 return tab3;
             default:
                 return null;

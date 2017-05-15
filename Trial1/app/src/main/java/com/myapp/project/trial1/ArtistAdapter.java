@@ -42,8 +42,12 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
     @Override
     public void onBindViewHolder(ArtistViewHolder holder, int position) {
         Song currSong = artistList.get(position);
+        if(currSong.getImage() != null) {
+            int i = currSong.getImage().length;
+            Log.i("BITMAP SIZE for " + currSong.getTitle() + "is", String.valueOf(i));
+        }
 
-        Bitmap bitmap = new BitmapResult().result(currSong.getImage());
+        Bitmap bitmap = new BitmapResult().resizeResult(currSong.getImage(),100,100);
         if (bitmap != null) {
             holder.albumArt.setImageBitmap(bitmap);
         } else {
@@ -78,16 +82,13 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
             for(int i = 0; i < testingList.size(); i++){
                 Log.i("table contents",testingList.get(i).getTitle());
             }
-            //ntent.putExtra("song", song);
             intent.putExtra("artistName",song.getArtist());
-            //intent.putExtra("arrayList", testingList);
-            //intent.putParcelableArrayListExtra("list", testingList);
             context.startActivity(intent);
         }
 
-        public interface ItemClickListener {
+/*        public interface ItemClickListener {
             void onItemClick(View view, int position);
-        }
+        }*/
     }
 
     void setTable(){

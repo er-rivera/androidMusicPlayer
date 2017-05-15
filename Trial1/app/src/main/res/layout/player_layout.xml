@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- SLIDING LAYOUT -->
+<?xml version="1.0" encoding="utf-8"?><!-- SLIDING LAYOUT -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,64 +9,62 @@
     android:focusable="false"
     android:orientation="vertical"
     android:weightSum="100">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="67">
 
 
-
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/albumArt_slidingPanel"
             android:layout_width="325dp"
-
             android:layout_height="325dp"
-            app:srcCompat="@color/colorAccent"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@color/colorAccent" />
 
         <SeekBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/seekBar"
-            android:layout_below="@+id/imageView"
-            android:layout_alignLeft="@+id/imageView"
-            android:layout_alignStart="@+id/imageView"
-            android:layout_alignRight="@id/imageView"
-            android:layout_alignEnd="@id/imageView" />
-
-        <TextView
-            android:text="00:00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="10dp"
+            android:layout_alignEnd="@id/albumArt_slidingPanel"
+            android:layout_alignLeft="@+id/albumArt_slidingPanel"
+            android:layout_alignRight="@id/albumArt_slidingPanel"
+            android:layout_alignStart="@+id/albumArt_slidingPanel"
+            android:layout_below="@+id/albumArt_slidingPanel" />
+
+        <TextView
             android:id="@+id/durationCurrent"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_below="@+id/imageView"
-            android:layout_alignLeft="@+id/seekBar"
-            android:layout_alignStart="@+id/seekBar" />
-
-        <TextView
-            android:text="00:00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="10dp"
-            android:id="@+id/durationTotal"
+            android:layout_alignLeft="@+id/seekBar"
+            android:layout_alignStart="@+id/seekBar"
+            android:layout_below="@+id/albumArt_slidingPanel"
+            android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
+            android:text="00:00"
+            android:textSize="10dp" />
+
+        <TextView
+            android:id="@+id/durationTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/durationCurrent"
             android:layout_alignBottom="@+id/durationCurrent"
+            android:layout_alignEnd="@+id/seekBar"
             android:layout_alignRight="@+id/seekBar"
-            android:layout_alignEnd="@+id/seekBar" />
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:text="00:00"
+            android:textSize="10dp" />
 
         <LinearLayout
             android:id="@+id/slidingContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#FFFFFF"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/btn_play_SlidingBar"
@@ -79,9 +76,9 @@
                 android:paddingRight="10dp"
                 android:paddingTop="5dp"
                 android:src="@drawable/btn_play"
-                tools:text="Play"
                 android:textAlignment="center"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                tools:text="Play" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -89,9 +86,9 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
+                android:paddingBottom="10dp"
                 android:paddingLeft="10dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="10dp">
+                android:paddingTop="5dp">
 
                 <TextView
                     android:id="@+id/name"
@@ -102,6 +99,7 @@
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/artistAlbum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="marquee"
@@ -109,7 +107,6 @@
                     android:maxLines="1"
                     android:scrollHorizontally="true"
                     android:text="Artist Name - Album "
-                    android:id="@+id/artistAlbum"
                     android:textColor="@android:color/black"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -133,22 +130,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
+        android:layout_weight="25"
         android:gravity="center_horizontal"
-        android:layout_weight="25">
+        android:orientation="vertical">
 
         <TextView
-            android:layout_marginTop="10dp"
             android:id="@+id/songName_slidingPanel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Song Name"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
             android:marqueeRepeatLimit="marquee_forever"
             android:maxLines="1"
             android:scrollHorizontally="true"
+            android:text="Song Name"
             android:textColor="@color/colorAccent"
-            android:textSize="25sp"
-            android:layout_centerHorizontal="true" />
+            android:textSize="25sp" />
 
         <LinearLayout
             android:id="@+id/artistalbum_container"
@@ -161,11 +158,11 @@
                 android:id="@+id/artistAlbum_slidingPanel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Artist Name"
                 android:ellipsize="marquee"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:maxLines="1"
                 android:scrollHorizontally="true"
+                android:text="Artist Name"
                 android:textColor="@android:color/black"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
@@ -173,9 +170,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
             android:gravity="center_horizontal"
-            android:layout_marginTop="10dp">
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/btn_prev_SlidingPanel"
@@ -203,37 +200,41 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="horizontal"
+        android:layout_weight="10"
         android:gravity="center_horizontal"
-        android:layout_weight="10">
+        android:orientation="horizontal">
+
         <ImageButton
+            android:id="@+id/spek_SlidingPanel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:src="@drawable/btn_spek_panel"
             android:layout_weight="1"
-            />
+            android:background="@android:color/transparent"
+            android:src="@drawable/btn_spek_panel" />
+
         <View
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            />
+            android:layout_weight="1" />
+
         <ImageButton
             android:id="@+id/btn_shuffle_SlidingPanel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_shuffle_panel" />
+
         <View
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
+
         <ImageButton
+            android:id="@+id/btn_repeat_SlidingPanel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@null"
-            android:src="@drawable/btn_repeat_panel"
-            android:id="@+id/imageButton"
-            android:layout_weight="1"/>
+            android:src="@drawable/btn_repeat_panel" />
 
     </LinearLayout>
 </LinearLayout>

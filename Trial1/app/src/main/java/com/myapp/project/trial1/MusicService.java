@@ -11,16 +11,15 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.util.Log;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-import android.os.IBinder;
 
 
 public class MusicService extends Service implements MediaPlayer.OnPreparedListener,
         MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener{
     public static MediaPlayer player;
-    private  ArrayList<Song> songs;
+    private List<Song> songs;
     public static int songPosn;
     private final IBinder musicBind = new MusicBinder();
     byte[] art;
@@ -32,7 +31,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private Random random;
     private boolean isShuffle = false;
     private boolean isRepeat = false;
-
+    private boolean isPrepared = false;
     public void onCreate(){
         super.onCreate();
         songPosn = 0;
@@ -56,8 +55,17 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
 
 
-    public void setList(ArrayList<Song> theSongs){
+    public void setList(List<Song> theSongs){
         songs = theSongs;
+        size = songs.size();
+    }
+
+    public boolean isPrepared() {
+        return isPrepared;
+    }
+
+    public void setPrepared(boolean prepared) {
+        isPrepared = prepared;
     }
 
     public class MusicBinder extends Binder{
@@ -69,6 +77,31 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public void playSong(){
         player.reset();
         Song playSong = songs.get(songPosn);
+        long currSong = playSong.getId();
+        String currTitle = playSong.getTitle();
+        byte[] currArt = playSong.getImage();
+        String currArtist = playSong.getArtist();
+        String currAlbum = playSong.getAlbum();
+        String currDuration = playSong.getDurationInString();
+        setArt(currArt);
+        setTitle(currTitle);
+        setAlbum(currAlbum);
+        setArtist(currArtist);
+        setDuration(currDuration);
+        //set URI
+        Uri trackUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                currSong);
+        try {
+            player.setDataSource(getApplicationContext(), trackUri);
+        }catch (Exception e){
+            Log.e("MUSIC SERVICE", "Error setting data source", e);
+        }
+        player.prepareAsync();
+    }
+
+    public void playSong(Song s){
+        player.reset();
+        Song playSong = s;
         long currSong = playSong.getId();
         String currTitle = playSong.getTitle();
         byte[] currArt = playSong.getImage();
@@ -156,6 +189,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         size = s;
     }
 
+    public int getListSize(){return size;}
+
     public void playPrev(){
         songPosn--;
         if(songPosn < 0)
@@ -228,6 +263,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public void onPrepared(MediaPlayer mp) {
         //START PLAYBACK
         mp.start();
+        isPrepared = true;
     }
 
 }

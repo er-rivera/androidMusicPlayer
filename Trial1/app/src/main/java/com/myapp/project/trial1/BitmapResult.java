@@ -2,6 +2,7 @@ package com.myapp.project.trial1;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 /**
  * Created by user on 4/11/17.
@@ -10,17 +11,28 @@ import android.graphics.BitmapFactory;
 public class BitmapResult {
     private BitmapFactory.Options options;
 
-    public Bitmap result(byte[] value){
+    public Bitmap resizeResult(byte[] value, int scaleX, int scaleY){
         if (value != null) {
             options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeByteArray(value, 0, value.length,options);
             int imageHeight = options.outHeight;
             int imageWidth = options.outWidth;
-            Bitmap bitmap = decodeSampledBitmapFromByteArray(value, 0, 100, 100);
-            bitmap = Bitmap.createScaledBitmap(bitmap,100,100,true);
+            Bitmap bitmap = decodeSampledBitmapFromByteArray(value, 0, scaleX, scaleY);
+            bitmap = Bitmap.createScaledBitmap(bitmap,scaleX,scaleY,true);
             return bitmap;
         } else {
+            return null;
+        }
+    }
+
+    public Bitmap result(byte[] albumArt){
+        try {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(albumArt, 0, albumArt.length);
+            return bitmap;
+        }
+        catch (Exception e){
+            Log.i("ERROR", "COULD NOT DECODE BYTE ARRAY");
             return null;
         }
     }

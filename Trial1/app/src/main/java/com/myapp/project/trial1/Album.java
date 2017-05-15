@@ -2,13 +2,16 @@ package com.myapp.project.trial1;
 
 import android.graphics.Bitmap;
 
+import com.bignerdranch.expandablerecyclerview.model.Parent;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by user on 4/11/17.
  */
 
-public class Album {
+public class Album implements Parent<Song> {
     private byte[] albumArt;
     private String albumName;
     private ArrayList<Song> albumList;
@@ -17,6 +20,19 @@ public class Album {
         this.albumArt = albumArt;
         this.albumName = albumName;
         this.albumList = new ArrayList<>();
+    }
+
+    public Album(byte[] albumArt, String albumName, Song song) {
+        this.albumArt = albumArt;
+        this.albumName = albumName;
+        this.albumList = new ArrayList<>();
+        add(song);
+    }
+
+    public Album(Album album){
+        this.albumArt = album.getAlbumArt();
+        this.albumName = album.getAlbumName();
+        this.albumList = album.getChildList();
     }
 
     public byte[] getAlbumArt() {
@@ -31,11 +47,17 @@ public class Album {
         return albumList.size();
     }
 
-    public ArrayList<Song> getAlbumList() {
+    public void add(Song song){
+        albumList.add(song);
+    }
+
+    @Override
+    public ArrayList<Song> getChildList() {
         return albumList;
     }
 
-    public void add(Song song){
-        albumList.add(song);
+    @Override
+    public boolean isInitiallyExpanded() {
+        return false;
     }
 }

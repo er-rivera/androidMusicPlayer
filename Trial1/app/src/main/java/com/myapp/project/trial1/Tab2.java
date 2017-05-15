@@ -10,12 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.AdapterView;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
-
-/**
- * Created by user on 12/21/16.
- */
 
 public class Tab2 extends Fragment {
     private ArrayList<Song> songList3;
@@ -31,13 +28,6 @@ public class Tab2 extends Fragment {
         ListAdapter adapter = new ListAdapter(getActivity(),R.layout.song_item_layout,songList3);
         ListView lv = (ListView) rootView.findViewById(R.id.list);
         lv.setAdapter(adapter);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("Testing INTENT", String.valueOf(position));
-            }
-        });
-
         return rootView;
     }
 
