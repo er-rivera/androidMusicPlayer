@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.myapp.project.trial1">
+    package="com.myapp.waveform.trial1">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!--<uses-permission android:name="android.permission.WAKE_LOCK" />-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Splash.SplashActivity"
+            android:name="com.myapp.waveform.trial1.Splash.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,21 +24,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.myapp.waveform.trial1.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <service android:name="com.myapp.project.trial1.Services.MusicService"/>
+        <service android:name="com.myapp.waveform.trial1.Services.MusicService"/>
         <activity
-            android:name=".DetailActivity"
+            android:name="com.myapp.waveform.trial1.DetailActivity"
             android:label="@string/title_activity_detail"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName="com.myapp.waveform.trial1.MainActivity"
             android:theme="@style/AppThemeLight">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.myapp.project.trial1.MainActivity" />
+                android:value="com.myapp.waveform.trial1.MainActivity" />
         </activity>
     </application>
+
 
 </manifest>
